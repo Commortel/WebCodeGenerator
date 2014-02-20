@@ -1,0 +1,68 @@
+package fr.ensisa.code_generator;
+
+import java.util.TreeMap;
+import java.util.Map;
+
+parser code {:
+    
+    public void report_error(String message, Object info) {
+        StringBuffer m = new StringBuffer("Error");
+		m.append(info.toString());
+        m.append(" : "+message);
+        System.err.println(m.toString());
+    }
+   
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+
+    private Context context;
+
+    public void setContext(Context context) {
+    	this.context = context;
+    }
+
+    public Context getContext() {
+		return context;
+    }
+
+	public Factory getFactory () {
+		return getContext().getFactory();
+	}
+
+:}
+
+terminal Integer	NUMBER;
+terminal String		ID;
+terminal			COMMENT;
+terminal 			TERM;
+terminal 			CLASS;
+terminal 			KEYWORD; 
+terminal			OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET;
+   
+nonterminal 		compilation_unit, type_declaration;
+nonterminal 		class_declaration, doc_comment;
+nonterminal 		modifier, field_declaration;
+
+compilation_unit	::= 
+					| type_declaration:t 
+					;
+					
+type_declaration	::= 
+					| doc_comment:d class_declaration:c {: getFactory().appendToFile(d,c); :}
+					;
+
+class_declaration	::= 
+					| modifier:m CLASS ID:id OPEN_BRACE field_declaration CLOSE_BRACE {: RESULT = getFactory().createClass(m, id); :}
+					;
+
+modifier			::= KEYWORD:k {: RESULT = getFactory().createKeyword(k); :}
+					;
+			     
+field_declaration	::= ID
+					;
+					
+doc_comment			::= 
+					| COMMENT:id {: RESULT = getFactory().createComment(id); :}
+					;

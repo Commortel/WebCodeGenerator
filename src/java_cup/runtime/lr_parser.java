@@ -1,11 +1,7 @@
 				    
 package java_cup.runtime;
 
-
 import java.util.Stack;
-
-import fr.ensisa.code_generator.Context;
-import fr.ensisa.code_generator.Factory;
 
 /** This class implements a skeleton table driven LR parser.  In general,
  *  LR parsers are a form of bottom up shift-reduce parsers.  Shift-reduce
@@ -1253,19 +1249,5 @@ public abstract class lr_parser {
       }
       return result;
     }
-  
-  private Context context;
-  
-  public void setContext(Context context) {
-	  this.context = context;
-  }
-  
-  public Context getContext() {
-	  return context;
-  }
-  
-  public Factory getFactory () {
-	  return getContext().getFactory();
-  }
 }
 
