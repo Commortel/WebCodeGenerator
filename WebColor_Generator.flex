@@ -15,6 +15,8 @@
 "}"						{ return getSymbolFactory().newSymbol ("CLOSE_BRACE", Sym.CLOSE_BRACE); }
 "["						{ return getSymbolFactory().newSymbol ("OPEN_BRACKET", Sym.OPEN_BRACKET); }
 "]"						{ return getSymbolFactory().newSymbol ("CLOSE_BRACKET", Sym.CLOSE_BRACKET); }
+"("						{ return getSymbolFactory().newSymbol ("OPEN_PARENTHESIS", Sym.OPEN_PARENTHESIS); }
+")"						{ return getSymbolFactory().newSymbol ("CLOSE_PARENTHESIS", Sym.CLOSE_PARENTHESIS); }
 
 "public"				{ return getSymbolFactory().newSymbol ("KEYWORD", Sym.KEYWORD, yytext()); }
 "private"				{ return getSymbolFactory().newSymbol ("KEYWORD", Sym.KEYWORD, yytext()); }
@@ -26,6 +28,9 @@
 "abstract"				{ return getSymbolFactory().newSymbol ("KEYWORD", Sym.KEYWORD, yytext()); }
 "threadsafe"			{ return getSymbolFactory().newSymbol ("KEYWORD", Sym.KEYWORD, yytext()); }
 "transient"				{ return getSymbolFactory().newSymbol ("KEYWORD", Sym.KEYWORD, yytext()); }
+
+"void"					{ return getSymbolFactory().newSymbol ("TYPE", Sym.TYPE, yytext()); }
+"int"					{ return getSymbolFactory().newSymbol ("TYPE", Sym.TYPE, yytext()); }
 
 "class"					{ return getSymbolFactory().newSymbol ("CLASS", Sym.CLASS); }
 

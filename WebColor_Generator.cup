@@ -39,11 +39,13 @@ terminal			COMMENT;
 terminal 			TERM;
 terminal 			CLASS;
 terminal 			KEYWORD; 
-terminal			OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET;
+terminal			TYPE;
+terminal			OPEN_BRACE, CLOSE_BRACE, OPEN_BRACKET, CLOSE_BRACKET, OPEN_PARENTHESIS, CLOSE_PARENTHESIS;
+terminal			END_CLASS;
    
 nonterminal 		compilation_unit, type_declaration;
 nonterminal 		class_declaration, doc_comment;
-nonterminal 		modifier, field_declaration;
+nonterminal 		modifiers, modifier, field_declaration;
 
 compilation_unit	::= 
 					| type_declaration:t 
@@ -53,16 +55,26 @@ type_declaration	::=
 					| doc_comment:d class_declaration:c {: getFactory().appendToFile(d,c); :}
 					;
 
-class_declaration	::= 
-					| modifier:m CLASS ID:id OPEN_BRACE field_declaration CLOSE_BRACE {: RESULT = getFactory().createClass(m, id); :}
-					;
-
-modifier			::= KEYWORD:k {: RESULT = getFactory().createKeyword(k); :}
-					;
-			     
-field_declaration	::= ID
+class_declaration	::= modifiers:m ID:id OPEN_BRACE field_declaration:fd CLOSE_BRACE {: RESULT = getFactory().createClass(m, id, fd); :}
 					;
 					
-doc_comment			::= 
-					| COMMENT:id {: RESULT = getFactory().createComment(id); :}
+field_declarations	::= field_declaration:fd {: RESULT = fd; :}
+					;
+			     
+field_declaration	::= modifiers:m ID:id TERM {: RESULT = getFactory().createVariable(m,id); :}
+					| modifiers:m ID:id OPEN_PARENTHESIS ID CLOSE_PARENTHESIS {: RESULT = getFactory().createFunction(m,id); :}
+					| doc_comment:d {: RESULT = d; :}
+					| field_declaration:fd1 field_declaration:fd2 {: RESULT = fd1 + "\n" + fd2; :}
+					;	
+					
+modifiers			::= 
+					| modifier:m TYPE:t {: RESULT = getFactory().createKeyword(m + " " + t); :}
+					| modifier:m CLASS {: RESULT = getFactory().createKeyword(m); :}
+					;					
+					
+modifier 			::= KEYWORD:k {: RESULT = k; :}
+					| modifier:m1 modifier:m2 {: RESULT = (String)m1 + " " + m2; :}
+					;				
+					
+doc_comment			::= COMMENT:id {: RESULT = getFactory().createComment(id); :}
 					;
